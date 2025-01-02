@@ -12,6 +12,21 @@ steps:
 
 - task: Gradle@3
   inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+- task: Gradle@3
+  inputs:
+    gradleWrapperFile: 'gradlew'
+    tasks: 'build'
+    publishJUnitResults: false
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.8'
+    gradleOptions: '-Xmx3072m'
+    sonarQubeRunAnalysis: false
+    spotBugsAnalysis: false
+
+- task: Gradle@3
+  inputs:
     gradleWrapperFile: 'gradlew'
     tasks: 'build'
     publishJUnitResults: false
@@ -19,6 +34,7 @@ steps:
     gradleOptions: '-Xmx3072m'
     sonarQubeRunAnalysis: false
     spotBugsAnalysis: false
+
 - task: Gradle@2
   inputs:
     workingDirectory: ''
