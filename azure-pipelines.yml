@@ -33,7 +33,7 @@ steps:
       $ANDROID_HOME/platform-tools/adb devices
       
       echo "Emulator started"
-      cd /usr/local/lib
+      cd /usr/local/lib/android/sdk/tools/bin
       dir
 
 - task: Gradle@3
