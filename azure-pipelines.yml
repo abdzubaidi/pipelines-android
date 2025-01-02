@@ -33,11 +33,9 @@ steps:
       $ANDROID_HOME/platform-tools/adb devices
       
       echo "Emulator started"
-      cd /usr/local/lib/android/sdk/tools/bin
+      cd $ANDROID_HOME/emulator/emulator
       dir
-      cd $ANDROID_HOME/emulator
-      dir
-      $ANDROID_HOME/emulator -list-avds
+      $ANDROID_HOME/emulator/emulator -list-avds
 
 - task: Gradle@3
   inputs:
