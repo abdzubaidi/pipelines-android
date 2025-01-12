@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/android
 
 trigger:
-- master
+- none
 
 pool:
   vmImage: 'macos-latest'
@@ -18,3 +18,5 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'assembleDebug'
+    javaHomeSelection: "JDKVersion"
+    javaHomeOption: "1.17"
