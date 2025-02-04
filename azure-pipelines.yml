@@ -1,49 +1,48 @@
-# Android
-# Build your Android project with Gradle.
-# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/android
-
 trigger:
-- none
+  none
+stages:
+- stage: __default
+  jobs:
+  - job: Job
+    pool:
+      vmImage: macOS-latest
+    steps:
+    - task: JavaToolInstaller@0
+      inputs:
+        versionSpec: '17'
+        jdkArchitectureOption: 'x64'
+        jdkSourceOption: 'PreInstalled'
+    - task: Bash@3
+      displayName: Check SDK
+      inputs:
+        targetType: 'inline'
+        script: |
+          #!/usr/bin/env bash
 
-pool:
-  vmImage: 'macOS-latest'
+          # List versions
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager list device
 
-steps:
-- task: JavaToolInstaller@0
-  inputs:
-    versionSpec: '17'
-    jdkArchitectureOption: 'x64'
-    jdkSourceOption: 'PreInstalled'
+          echo "Finished"
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          #!/usr/bin/env bash
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: |
-      #!/usr/bin/env bash
-      
-      # Install AVD files
-      echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-30;google_apis;x86'
-      
-      # Create emulator
-      echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n android_emulator -k 'system-images;android-30;google_apis;x86' --force
-      
-      $ANDROID_HOME/emulator/emulator -list-avds
-      
-      echo "Starting emulator"
-      
-      # Start emulator in background
-      nohup $ANDROID_HOME/emulator/emulator -avd android_emulator -no-snapshot -no-window -no-audio -no-boot-anim -accel off > /dev/null 2>&1 &
-      $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
-      
-      $ANDROID_HOME/platform-tools/adb devices
-      
-      echo "Emulator started"
-- task: Gradle@3
-  inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    publishJUnitResults: false
-    testResultsFiles: '**/TEST-*.xml'
-    tasks: 'assembleDebug --scan'
+          # Install AVD files
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-35;google_apis;x86_64'
+
+          # Create emulator
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n xamarin_android_emulator -d "Nexus 10" -k 'system-images;android-35;google_apis;x86_64' --force
+
+          echo "y" | $ANDROID_HOME/emulator/emulator -list-avds
+
+          echo "Starting emulator"
+
+          # Start emulator in background
+          nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -no-snapshot -no-window -no-audio -no-boot-anim -accel on > /dev/null 2>&1 &
+          $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
+
+          $ANDROID_HOME/platform-tools/adb devices
+
+          echo "Emulator started"
